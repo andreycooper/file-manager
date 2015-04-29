@@ -1,14 +1,14 @@
 package com.weezlabs.filemanager.model;
 
 
-public class Item implements Comparable<Item> {
+public class FileItem implements Comparable<FileItem> {
     String mName;
     String mDetails;
     String mDate;
     String mPath;
     String mIcon;
 
-    public Item(String name, String details, String date, String path, String icon) {
+    public FileItem(String name, String details, String date, String path, String icon) {
         mName = name;
         mDetails = details;
         mDate = date;
@@ -58,7 +58,7 @@ public class Item implements Comparable<Item> {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Item{");
+        final StringBuilder sb = new StringBuilder("FileItem{");
         sb.append("mName='").append(mName).append('\'');
         sb.append(", mDetails='").append(mDetails).append('\'');
         sb.append(", mPath='").append(mPath).append('\'');
@@ -69,7 +69,7 @@ public class Item implements Comparable<Item> {
     }
 
     @Override
-    public int compareTo(Item another) {
+    public int compareTo(FileItem another) {
         if (mName != null) {
             return mName.toLowerCase().compareTo(another.getName().toLowerCase());
         } else {

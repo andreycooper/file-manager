@@ -1,31 +1,52 @@
 package com.weezlabs.filemanager;
 
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.weezlabs.filemanager.model.Item;
+import com.weezlabs.filemanager.model.FileItem;
 
-import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
-    private String mRootDir = Environment.getExternalStorageDirectory().getPath();
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<FileItem>> {
+    public static final String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
+    private static final int FILE_LIST_LOADER = 15051982;
+
+    private String mCurrentDir = ROOT_DIR;
+    private ListView mFilesListView;
+    private FileListAdapter mFileListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListView filesListView = (ListView) findViewById(R.id.files_list);
+        mFileListAdapter = new FileListAdapter(this, new ArrayList<FileItem>());
+        mFilesListView = (ListView) findViewById(R.id.files_list);
+
+        final LoaderManager.LoaderCallbacks<List<FileItem>> callbacks = this;
+        mFilesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: update mCurrentDir and restart Loader
+                Bundle args = new Bundle();
+                args.putString(FileListLoader.DIRECTORY, mCurrentDir);
+                getLoaderManager().restartLoader(FILE_LIST_LOADER, args, callbacks);
+            }
+        });
+
+        Bundle args = new Bundle();
+        args.putString(FileListLoader.DIRECTORY, mCurrentDir);
+        getLoaderManager().initLoader(FILE_LIST_LOADER, args, this);
     }
 
     @Override
@@ -37,70 +58,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_settings) {
             Toast.makeText(this, getString(R.string.toast_settings_click), Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: remove method to AsyncTask
-    private void fill(File directory) {
-        String lastModifiedDate;
-        String details;
-        String absolutePath;
-        String fileName;
+    @Override
+    public void onBackPressed() {
+        // TODO: update mCurrentDir to parent directoryand restart Loader
 
-        File[] files = directory.listFiles();
-        setTitle(directory.getName());
-        List<Item> dirList = new ArrayList<>();
-        List<Item> fileList = new ArrayList<>();
-
-        for (File file : files) {
-            fileName = file.getName();
-            lastModifiedDate = getLastModifiedDate(file);
-            absolutePath = file.getAbsolutePath();
-            if (file.isDirectory()) {
-                details = getSubFilesCount(file);
-                dirList.add(new Item(fileName, details, lastModifiedDate, absolutePath, "directory_icon"));
-            } else {
-                details = getFileLenght(file);
-                fileList.add(new Item(fileName, details, lastModifiedDate, absolutePath, "file_icon"));
-            }
-        }
-        Collections.sort(dirList);
-        Collections.sort(fileList);
-        dirList.addAll(fileList);
-        if (!directory.getName().equalsIgnoreCase(mRootDir)){
-            // TODO: add directory_up item to first position in list
-        }
-        // TODO: create Adapter
-
-        // TODO: set Adapter to listview
+        super.onBackPressed();
     }
 
-    private String getLastModifiedDate(File file) {
-        Date lastModifiedDate = new Date(file.lastModified());
-        DateFormat dateFormatter = DateFormat.getDateInstance();
-        return dateFormatter.format(lastModifiedDate);
+    @Override
+    public Loader<List<FileItem>> onCreateLoader(int id, Bundle args) {
+        Loader<List<FileItem>> loader = null;
+        if (id == FILE_LIST_LOADER) {
+            loader = new FileListLoader(this, args);
+        }
+        return loader;
     }
 
-    private String getSubFilesCount(File file) {
-        File[] subFiles = file.listFiles();
-        int countFiles = 0;
-        if (subFiles != null) {
-            countFiles = subFiles.length;
-        }
-        if (countFiles == 1) {
-            return String.valueOf(countFiles) + " Item";
-        } else {
-            return String.valueOf(countFiles) + " Items";
+    @Override
+    public void onLoadFinished(Loader<List<FileItem>> loader, List<FileItem> data) {
+        if (loader.getId() == FILE_LIST_LOADER) {
+            mFileListAdapter.clear();
+            mFileListAdapter.addAll(data);
+            mFileListAdapter.notifyDataSetChanged();
         }
     }
 
-    private String getFileLenght(File file) {
-        return file.length() + " Bytes";
+    @Override
+    public void onLoaderReset(Loader<List<FileItem>> loader) {
+
     }
 }
