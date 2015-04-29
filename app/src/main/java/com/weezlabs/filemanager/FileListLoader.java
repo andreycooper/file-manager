@@ -18,6 +18,8 @@ import java.util.List;
 
 public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
     public static final String DIRECTORY = "com.weezlabs.filemanager.model.DIRECTORY";
+    public static final String EMPTY_STRING = "";
+    public static final String PARENT_DIR = "..";
     private String mDirectory;
 
     public FileListLoader(Context context, Bundle args) {
@@ -48,17 +50,18 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
             absolutePath = file.getAbsolutePath();
             if (file.isDirectory()) {
                 details = getSubFilesCount(file);
-                dirList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, "directory_icon"));
+                dirList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, FileItem.DIRECTORY));
             } else {
                 details = getFileLength(file);
-                fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, "file_icon"));
+                fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, FileItem.FILE));
             }
         }
         Collections.sort(dirList);
         Collections.sort(fileList);
         dirList.addAll(fileList);
-        if (!directory.getName().equalsIgnoreCase(MainActivity.ROOT_DIR)) {
-            // TODO: add directory_up item to first position in list
+        if (!directory.getPath().equalsIgnoreCase(MainActivity.ROOT_DIR)) {
+            dirList.add(MainActivity.FIRST_POSITION,
+                    new FileItem(EMPTY_STRING, PARENT_DIR, EMPTY_STRING, directory.getParent(), FileItem.DIRECTORY_UP));
         }
         return dirList;
     }
@@ -75,14 +78,14 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
         if (subFiles != null) {
             countFiles = subFiles.length;
         }
-        if (countFiles == 1) {
-            return String.valueOf(countFiles) + " Item";
-        } else {
-            return String.valueOf(countFiles) + " Items";
-        }
+        return countFiles == 1 ? String.valueOf(countFiles) + getContext().getString(R.string.one_item) :
+                String.valueOf(countFiles) + getContext().getString(R.string.many_items);
     }
 
     private String getFileLength(File file) {
-        return file.length() + " Bytes";
+        return file.length() == 1 ? String.valueOf(file.length()) + getContext().getString(R.string.one_byte) :
+                String.valueOf(file.length()) + getContext().getString(R.string.many_bytes);
     }
+
+
 }

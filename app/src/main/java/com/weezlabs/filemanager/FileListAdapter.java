@@ -1,6 +1,9 @@
 package com.weezlabs.filemanager;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +36,35 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
         }
 
         final FileItem fileItem = getItem(position);
-        holder.title.setText(fileItem.getName());
         holder.details.setText(fileItem.getDetails());
         holder.date.setText(fileItem.getDate());
-        holder.icon.setImageResource(R.mipmap.ic_launcher);
+        switch (fileItem.getIconType()) {
+            case FileItem.DIRECTORY_UP:
+                holder.title.setText(fileItem.getName());
+                holder.details.setText(getBoldString(fileItem.getDetails()));
+                holder.icon.setImageResource(R.drawable.ic_folder_up);
+                break;
+            case FileItem.DIRECTORY:
+                // SpannableString works better than setTypeface()
+                holder.title.setText(getBoldString(fileItem.getName()));
+                holder.icon.setImageResource(R.drawable.ic_folder);
+                break;
+            case FileItem.FILE:
+                holder.title.setText(fileItem.getName());
+                // TODO: get icon from associated app
+                holder.icon.setImageResource(R.drawable.ic_default_file);
+                break;
+            default:
+                break;
+        }
 
         return convertView;
+    }
+
+    private SpannableString getBoldString(String title) {
+        SpannableString spannableString = new SpannableString(title);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableString.length(), 0);
+        return spannableString;
     }
 
     static class ViewHolder {

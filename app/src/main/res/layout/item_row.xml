@@ -23,8 +23,7 @@
         android:padding="@dimen/item_row_text_padding"
         android:singleLine="true"
         android:text="@string/label_item_row_title_sample_text"
-        android:textSize="@dimen/item_row_title_text_size"
-        android:textStyle="bold"/>
+        android:textSize="@dimen/item_row_title_text_size"/>
 
     <RelativeLayout
         android:id="@+id/details_layout"

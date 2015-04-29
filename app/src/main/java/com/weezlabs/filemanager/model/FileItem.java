@@ -2,18 +2,21 @@ package com.weezlabs.filemanager.model;
 
 
 public class FileItem implements Comparable<FileItem> {
+    public static final int DIRECTORY_UP = 1;
+    public static final int DIRECTORY = 2;
+    public static final int FILE = 3;
     String mName;
     String mDetails;
     String mDate;
     String mPath;
-    String mIcon;
+    int mIconType;
 
-    public FileItem(String name, String details, String date, String path, String icon) {
+    public FileItem(String name, String details, String date, String path, int iconType) {
         mName = name;
         mDetails = details;
         mDate = date;
         mPath = path;
-        mIcon = icon;
+        mIconType = iconType;
     }
 
     public String getName() {
@@ -48,12 +51,12 @@ public class FileItem implements Comparable<FileItem> {
         mDate = date;
     }
 
-    public String getIcon() {
-        return mIcon;
+    public int getIconType() {
+        return mIconType;
     }
 
-    public void setIcon(String icon) {
-        mIcon = icon;
+    public void setIconType(int iconType) {
+        mIconType = iconType;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class FileItem implements Comparable<FileItem> {
         sb.append(", mDetails='").append(mDetails).append('\'');
         sb.append(", mPath='").append(mPath).append('\'');
         sb.append(", mDate='").append(mDate).append('\'');
-        sb.append(", mIcon='").append(mIcon).append('\'');
+        sb.append(", mIconType='").append(mIconType).append('\'');
         sb.append('}');
         return sb.toString();
     }
