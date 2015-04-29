@@ -10,7 +10,7 @@ import java.io.File;
 
 public class FileOpener {
 
-    public static final String ALL_APPS = "*/*";
+    public static final String ALL_TYPE = "*/*";
 
     public static void openFile(Context context, String filePath) throws ActivityNotFoundException {
         File file = new File(filePath);
@@ -23,7 +23,7 @@ public class FileOpener {
         String type = map.getMimeTypeFromExtension(ext);
 
         if (type == null) {
-            type = ALL_APPS;
+            type = ALL_TYPE;
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW);

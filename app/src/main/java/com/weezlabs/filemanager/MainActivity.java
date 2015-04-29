@@ -57,11 +57,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         updateState(fileItem.getPath(), position);
                         useLoader(mCurrentDir);
                         break;
+
                     case FileItem.DIRECTORY:
                         updateState(fileItem.getPath(), position);
                         useLoader(mCurrentDir);
                         break;
-                    case FileItem.FILE:
+
+                    default:
                         try {
                             FileOpener.openFile(getApplicationContext(), fileItem.getPath());
                         } catch (ActivityNotFoundException e) {
@@ -69,14 +71,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             Log.e(LOG_TAG, "Cant start app for file " + fileItem.getName());
                         }
                         break;
-                    default:
-                        break;
                 }
             }
         });
 
         updateState(ROOT_DIR, FIRST_POSITION);
         useLoader(mCurrentDir);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mFileItemList.isEmpty()) {
+            useLoader(mCurrentDir);
+        }
     }
 
     private void updateState(String directory, int position) {

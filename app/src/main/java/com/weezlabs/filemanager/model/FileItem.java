@@ -1,15 +1,22 @@
 package com.weezlabs.filemanager.model;
 
 
+import android.net.Uri;
+
 public class FileItem implements Comparable<FileItem> {
     public static final int DIRECTORY_UP = 1;
     public static final int DIRECTORY = 2;
     public static final int FILE = 3;
+    public static final int VIDEO_FILE = 4;
+    public static final int IMAGE_FILE = 5;
+    public static final int AUDIO_FILE = 6;
+
     String mName;
     String mDetails;
     String mDate;
     String mPath;
     int mIconType;
+    Uri mThumbnailUri;
 
     public FileItem(String name, String details, String date, String path, int iconType) {
         mName = name;
@@ -17,6 +24,12 @@ public class FileItem implements Comparable<FileItem> {
         mDate = date;
         mPath = path;
         mIconType = iconType;
+        mThumbnailUri = null;
+    }
+
+    public FileItem(String name, String details, String date, String path, int iconType, Uri thumbnailUri) {
+        this(name, details, date, path, iconType);
+        mThumbnailUri = thumbnailUri;
     }
 
     public String getName() {
@@ -57,6 +70,14 @@ public class FileItem implements Comparable<FileItem> {
 
     public void setIconType(int iconType) {
         mIconType = iconType;
+    }
+
+    public Uri getThumbnailUri() {
+        return mThumbnailUri;
+    }
+
+    public void setThumbnailUri(Uri thumbnailUri) {
+        mThumbnailUri = thumbnailUri;
     }
 
     @Override

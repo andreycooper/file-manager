@@ -2,9 +2,12 @@ package com.weezlabs.filemanager;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.weezlabs.filemanager.model.FileItem;
 
@@ -19,7 +22,8 @@ import java.util.List;
 public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
     public static final String DIRECTORY = "com.weezlabs.filemanager.model.DIRECTORY";
     public static final String EMPTY_STRING = "";
-    public static final String PARENT_DIR = "..";
+    public static final String PARENT_DIR = ". .";
+    private static final String LOG_TAG = FileListLoader.class.getSimpleName();
     private String mDirectory;
 
     public FileListLoader(Context context, Bundle args) {
@@ -28,7 +32,7 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
             mDirectory = args.getString(DIRECTORY);
         }
         if (TextUtils.isEmpty(mDirectory)) {
-            mDirectory = Environment.getExternalStorageDirectory().getPath();
+            mDirectory = MainActivity.ROOT_DIR;
         }
     }
 
@@ -53,7 +57,12 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
                 dirList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, FileItem.DIRECTORY));
             } else {
                 details = getFileLength(file);
-                fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, FileItem.FILE));
+                int fileType = getFileType(file);
+                if (fileType == FileItem.IMAGE_FILE) {
+                    fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, fileType, getImageThumbnailUri(file)));
+                } else {
+                    fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, fileType));
+                }
             }
         }
         Collections.sort(dirList);
@@ -64,6 +73,45 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
                     new FileItem(EMPTY_STRING, PARENT_DIR, EMPTY_STRING, directory.getParent(), FileItem.DIRECTORY_UP));
         }
         return dirList;
+    }
+
+    private int getFileType(File file) {
+        String type = getMimeType(file);
+        if (type == null) {
+            return FileItem.FILE;
+        } else if (type.startsWith("video")) {
+            return FileItem.VIDEO_FILE;
+        } else if (type.startsWith("image")) {
+            return FileItem.IMAGE_FILE;
+        } else if (type.startsWith("audio")) {
+            return FileItem.AUDIO_FILE;
+        } else {
+            return FileItem.FILE;
+        }
+
+    }
+
+    private String getMimeType(File file) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath());
+        if (extension != null) {
+            MimeTypeMap map = MimeTypeMap.getSingleton();
+            type = map.getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
+    private Uri getImageThumbnailUri(File file) {
+        Uri imageUri = null;
+        Cursor cursor = MediaStore.Images.Thumbnails.queryMiniThumbnails(
+                getContext().getContentResolver(),
+                Uri.fromFile(file),
+                MediaStore.Images.Thumbnails.MINI_KIND,
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA)));
+        }
+        return imageUri;
     }
 
     private String getLastModifiedDate(File file) {

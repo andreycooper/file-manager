@@ -11,8 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.weezlabs.filemanager.model.FileItem;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -36,29 +38,66 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
         }
 
         final FileItem fileItem = getItem(position);
+        fillRow(holder, fileItem);
+
+        return convertView;
+    }
+
+    private void fillRow(final ViewHolder holder, final FileItem fileItem) {
         holder.details.setText(fileItem.getDetails());
         holder.date.setText(fileItem.getDate());
         switch (fileItem.getIconType()) {
+
             case FileItem.DIRECTORY_UP:
                 holder.title.setText(fileItem.getName());
                 holder.details.setText(getBoldString(fileItem.getDetails()));
                 holder.icon.setImageResource(R.drawable.ic_folder_up);
                 break;
+
             case FileItem.DIRECTORY:
                 // SpannableString works better than setTypeface()
                 holder.title.setText(getBoldString(fileItem.getName()));
                 holder.icon.setImageResource(R.drawable.ic_folder);
                 break;
+
             case FileItem.FILE:
                 holder.title.setText(fileItem.getName());
                 // TODO: get icon from associated app
                 holder.icon.setImageResource(R.drawable.ic_default_file);
                 break;
+
+            case FileItem.IMAGE_FILE:
+                holder.title.setText(fileItem.getName());
+                if (fileItem.getThumbnailUri() != null) {
+                    Picasso.with(getContext())
+                            .load(fileItem.getThumbnailUri())
+                            .placeholder(R.drawable.ic_image_file)
+                            .fit()
+                            .centerInside()
+                            .into(holder.icon);
+                } else {
+                    Picasso.with(getContext())
+                            .load(new File(fileItem.getPath()))
+                            .placeholder(R.drawable.ic_image_file)
+                            .fit()
+                            .centerInside()
+                            .into(holder.icon);
+                }
+                break;
+
+            case FileItem.VIDEO_FILE:
+                holder.title.setText(fileItem.getName());
+                // TODO: get thumbnailUri for video
+                holder.icon.setImageResource(R.drawable.ic_video_file);
+                break;
+
+            case FileItem.AUDIO_FILE:
+                holder.title.setText(fileItem.getName());
+                holder.icon.setImageResource(R.drawable.ic_audio_file);
+
             default:
                 break;
         }
-
-        return convertView;
     }
 
     private SpannableString getBoldString(String title) {
