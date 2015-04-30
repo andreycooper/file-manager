@@ -18,6 +18,17 @@ public class FileOpener {
     }
 
     public static void openFile(Context context, File file) throws ActivityNotFoundException {
+        Intent intent = getIntentWithDataAndType(file);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static Intent getIntentWithDataAndType(String filePath) {
+        File file = new File(filePath);
+        return getIntentWithDataAndType(file);
+    }
+
+    public static Intent getIntentWithDataAndType(File file) {
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String ext = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         String type = map.getMimeTypeFromExtension(ext);
@@ -30,7 +41,6 @@ public class FileOpener {
         Uri data = Uri.fromFile(file);
 
         intent.setDataAndType(data, type);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        return intent;
     }
 }

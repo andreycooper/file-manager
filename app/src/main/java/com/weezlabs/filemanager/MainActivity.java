@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FileItem fileItem = mFileItemList.get(position);
-                switch (mFileItemList.get(position).getIconType()) {
+                switch (mFileItemList.get(position).getFileType()) {
                     case FileItem.DIRECTORY_UP:
                         updateState(fileItem.getPath(), position);
                         useLoader(mCurrentDir);

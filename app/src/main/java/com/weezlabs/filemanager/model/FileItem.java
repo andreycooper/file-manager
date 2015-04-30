@@ -15,20 +15,20 @@ public class FileItem implements Comparable<FileItem> {
     String mDetails;
     String mDate;
     String mPath;
-    int mIconType;
+    int mFileType;
     Uri mThumbnailUri;
 
-    public FileItem(String name, String details, String date, String path, int iconType) {
+    public FileItem(String name, String details, String date, String path, int fileType) {
         mName = name;
         mDetails = details;
         mDate = date;
         mPath = path;
-        mIconType = iconType;
+        mFileType = fileType;
         mThumbnailUri = null;
     }
 
-    public FileItem(String name, String details, String date, String path, int iconType, Uri thumbnailUri) {
-        this(name, details, date, path, iconType);
+    public FileItem(String name, String details, String date, String path, int fileType, Uri thumbnailUri) {
+        this(name, details, date, path, fileType);
         mThumbnailUri = thumbnailUri;
     }
 
@@ -64,12 +64,12 @@ public class FileItem implements Comparable<FileItem> {
         mDate = date;
     }
 
-    public int getIconType() {
-        return mIconType;
+    public int getFileType() {
+        return mFileType;
     }
 
-    public void setIconType(int iconType) {
-        mIconType = iconType;
+    public void setFileType(int fileType) {
+        mFileType = fileType;
     }
 
     public Uri getThumbnailUri() {
@@ -87,7 +87,7 @@ public class FileItem implements Comparable<FileItem> {
         sb.append(", mDetails='").append(mDetails).append('\'');
         sb.append(", mPath='").append(mPath).append('\'');
         sb.append(", mDate='").append(mDate).append('\'');
-        sb.append(", mIconType='").append(mIconType).append('\'');
+        sb.append(", mFileType='").append(mFileType).append('\'');
         sb.append('}');
         return sb.toString();
     }

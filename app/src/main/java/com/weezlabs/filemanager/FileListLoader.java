@@ -24,6 +24,9 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
     public static final String EMPTY_STRING = "";
     public static final String PARENT_DIR = ". .";
     private static final String LOG_TAG = FileListLoader.class.getSimpleName();
+    public static final String VIDEO_TYPE = "video/";
+    public static final String IMAGE_TYPE = "image/";
+    public static final String AUDIO_TYPE = "audio/";
     private String mDirectory;
 
     public FileListLoader(Context context, Bundle args) {
@@ -79,11 +82,11 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
         String type = getMimeType(file);
         if (type == null) {
             return FileItem.FILE;
-        } else if (type.startsWith("video")) {
+        } else if (type.startsWith(VIDEO_TYPE)) {
             return FileItem.VIDEO_FILE;
-        } else if (type.startsWith("image")) {
+        } else if (type.startsWith(IMAGE_TYPE)) {
             return FileItem.IMAGE_FILE;
-        } else if (type.startsWith("audio")) {
+        } else if (type.startsWith(AUDIO_TYPE)) {
             return FileItem.AUDIO_FILE;
         } else {
             return FileItem.FILE;
@@ -103,6 +106,7 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
 
     private Uri getImageThumbnailUri(File file) {
         Uri imageUri = null;
+        // TODO: cursor is always null, why?
         Cursor cursor = MediaStore.Images.Thumbnails.queryMiniThumbnails(
                 getContext().getContentResolver(),
                 Uri.fromFile(file),
