@@ -65,7 +65,24 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
                 details = getFileLength(file);
                 int fileType = getFileType(file);
                 if (fileType == FileItem.IMAGE_FILE) {
-                    fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, fileType, getImageIdFromMediaStore(file)));
+                    fileList.add(
+                            new FileItem(
+                                    fileName,
+                                    details,
+                                    lastModifiedDate,
+                                    absolutePath,
+                                    fileType,
+                                    getImageIdFromMediaStore(file)));
+
+                } else if (fileType == FileItem.VIDEO_FILE) {
+                    fileList.add(
+                            new FileItem(
+                                    fileName,
+                                    details,
+                                    lastModifiedDate,
+                                    absolutePath,
+                                    fileType,
+                                    getVideoIdFromMediaStore(file)));
                 } else {
                     fileList.add(new FileItem(fileName, details, lastModifiedDate, absolutePath, fileType));
                 }
@@ -131,6 +148,10 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
         }
 
         return imageId;
+    }
+
+    private long getVideoIdFromMediaStore(File file) {
+        return getVideoIdFromMediaStore(file.getAbsolutePath(), getContext().getContentResolver());
     }
 
     /**

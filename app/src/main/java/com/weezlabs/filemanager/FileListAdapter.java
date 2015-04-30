@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.weezlabs.filemanager.model.FileItem;
 import com.weezlabs.filemanager.task.LoadAppIconTask;
 import com.weezlabs.filemanager.task.LoadImageThumbnailTask;
+import com.weezlabs.filemanager.task.LoadVideoThumbnailTask;
 import com.weezlabs.filemanager.util.ViewHolder;
 
 import java.io.File;
@@ -87,7 +88,8 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
             case FileItem.VIDEO_FILE:
                 holder.title.setText(fileItem.getName());
                 if (fileItem.getFileId() != FileItem.INCORRECT_ID) {
-                    // TODO: start LoadVideoThumbnailTask like LoadImageThumbnailTask
+                    new LoadVideoThumbnailTask(getContext(), holder, fileItem, position)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     holder.icon.setImageResource(R.drawable.ic_video_file);
                 }
