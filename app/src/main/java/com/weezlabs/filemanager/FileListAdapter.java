@@ -1,9 +1,11 @@
 package com.weezlabs.filemanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -132,12 +135,32 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
             Drawable icon = null;
             final PackageManager pm = context.getPackageManager();
             try {
-                icon = pm.getActivityIcon(FileOpener.getIntentWithDataAndType(filePath));
+                Intent intent = getIntentWithDataAndType(filePath);
+                if (intent != null) {
+                    icon = pm.getActivityIcon(getIntentWithDataAndType(filePath));
+                }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Component name not found!");
             }
             return icon;
+        }
+
+        private Intent getIntentWithDataAndType(String filePath){
+            File file = new File(filePath);
+            MimeTypeMap map = MimeTypeMap.getSingleton();
+            String ext = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+            String type = map.getMimeTypeFromExtension(ext);
+
+            if (type == null) {
+               return null;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri data = Uri.fromFile(file);
+
+            intent.setDataAndType(data, type);
+            return intent;
         }
 
         @Override
