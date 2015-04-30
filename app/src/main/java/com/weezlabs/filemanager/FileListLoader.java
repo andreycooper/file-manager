@@ -125,6 +125,8 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
             int columnIndex = cursor.getColumnIndex(projection[0]);
             imageId = cursor.getLong(columnIndex);
             Log.d(TAG, "Image ID is " + imageId);
+        }
+        if (cursor != null) {
             cursor.close();
         }
 
@@ -152,6 +154,8 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
             int columnIndex = cursor.getColumnIndex(projection[0]);
             videoId = cursor.getLong(columnIndex);
             Log.d(TAG, "Video ID is " + videoId);
+        }
+        if (cursor != null) {
             cursor.close();
         }
 
