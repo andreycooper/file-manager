@@ -1,8 +1,6 @@
 package com.weezlabs.filemanager.model;
 
 
-import android.net.Uri;
-
 public class FileItem implements Comparable<FileItem> {
     public static final int DIRECTORY_UP = 1;
     public static final int DIRECTORY = 2;
@@ -10,13 +8,14 @@ public class FileItem implements Comparable<FileItem> {
     public static final int VIDEO_FILE = 4;
     public static final int IMAGE_FILE = 5;
     public static final int AUDIO_FILE = 6;
+    public static final int INCORRECT_ID = -1;
 
     String mName;
     String mDetails;
     String mDate;
     String mPath;
     int mFileType;
-    Uri mThumbnailUri;
+    long mFileId;
 
     public FileItem(String name, String details, String date, String path, int fileType) {
         mName = name;
@@ -24,12 +23,12 @@ public class FileItem implements Comparable<FileItem> {
         mDate = date;
         mPath = path;
         mFileType = fileType;
-        mThumbnailUri = null;
+        mFileId = INCORRECT_ID;
     }
 
-    public FileItem(String name, String details, String date, String path, int fileType, Uri thumbnailUri) {
+    public FileItem(String name, String details, String date, String path, int fileType, long fileId) {
         this(name, details, date, path, fileType);
-        mThumbnailUri = thumbnailUri;
+        mFileId = fileId;
     }
 
     public String getName() {
@@ -72,12 +71,12 @@ public class FileItem implements Comparable<FileItem> {
         mFileType = fileType;
     }
 
-    public Uri getThumbnailUri() {
-        return mThumbnailUri;
+    public long getFileId() {
+        return mFileId;
     }
 
-    public void setThumbnailUri(Uri thumbnailUri) {
-        mThumbnailUri = thumbnailUri;
+    public void setFileId(long fileId) {
+        mFileId = fileId;
     }
 
     @Override
@@ -85,9 +84,10 @@ public class FileItem implements Comparable<FileItem> {
         final StringBuilder sb = new StringBuilder("FileItem{");
         sb.append("mName='").append(mName).append('\'');
         sb.append(", mDetails='").append(mDetails).append('\'');
-        sb.append(", mPath='").append(mPath).append('\'');
         sb.append(", mDate='").append(mDate).append('\'');
-        sb.append(", mFileType='").append(mFileType).append('\'');
+        sb.append(", mPath='").append(mPath).append('\'');
+        sb.append(", mFileType=").append(mFileType);
+        sb.append(", mFileId=").append(mFileId);
         sb.append('}');
         return sb.toString();
     }
