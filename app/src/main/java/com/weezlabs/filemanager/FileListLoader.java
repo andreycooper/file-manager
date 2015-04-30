@@ -106,7 +106,7 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
 
     private Uri getImageThumbnailUri(File file) {
         Uri imageUri = null;
-        // TODO: cursor is always null, why?
+        // TODO: cursor is always null :(
         Cursor cursor = MediaStore.Images.Thumbnails.queryMiniThumbnails(
                 getContext().getContentResolver(),
                 Uri.fromFile(file),

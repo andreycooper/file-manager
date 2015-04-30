@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.weezlabs.filemanager.model.FileItem;
-import com.weezlabs.filemanager.util.FileOpener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -72,8 +72,8 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
 
             case FileItem.FILE:
                 holder.title.setText(fileItem.getName());
-                new LoadIconTask(getContext(), fileItem.getPath(), holder, getPosition(fileItem))
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+                new LoadAppIconTask(getContext(), fileItem.getPath(), holder, getPosition(fileItem))
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 break;
 
             case FileItem.IMAGE_FILE:
@@ -116,18 +116,17 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
         return spannableString;
     }
 
-    static class LoadIconTask extends AsyncTask<Void, Void, Drawable> {
+    static class LoadAppIconTask extends AsyncTask<Void, Void, Drawable> {
 
         private Context mContext;
         private String mFilePath;
-        // TODO: maybe save holder in final WeakReference<ViewHolder> field?
-        private ViewHolder holder;
+        private WeakReference<ViewHolder> mHolderWeakReference;
         private int mPosition;
 
-        public LoadIconTask(Context context, String filePath, ViewHolder holder, int position) {
+        public LoadAppIconTask(Context context, String filePath, ViewHolder holder, int position) {
             mContext = context;
             mFilePath = filePath;
-            this.holder = holder;
+            mHolderWeakReference = new WeakReference<>(holder);
             mPosition = position;
         }
 
@@ -146,14 +145,14 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
             return icon;
         }
 
-        private Intent getIntentWithDataAndType(String filePath){
+        private Intent getIntentWithDataAndType(String filePath) {
             File file = new File(filePath);
             MimeTypeMap map = MimeTypeMap.getSingleton();
             String ext = MimeTypeMap.getFileExtensionFromUrl(file.getName());
             String type = map.getMimeTypeFromExtension(ext);
 
             if (type == null) {
-               return null;
+                return null;
             }
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -170,7 +169,8 @@ public class FileListAdapter extends ArrayAdapter<FileItem> {
 
         @Override
         protected void onPostExecute(Drawable icon) {
-            if (holder.position == mPosition) {
+            ViewHolder holder = mHolderWeakReference.get();
+            if (holder != null && holder.position == mPosition) {
                 if (icon != null) {
                     holder.icon.setImageDrawable(icon);
                 } else {
