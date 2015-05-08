@@ -7,4 +7,16 @@
     <string name="many_items">" Items"</string>
     <string name="one_byte">" Byte"</string>
     <string name="many_bytes">" Bytes"</string>
+
+    <plurals name="plurals_bytes">
+        <item quantity="zero">%1$d Bytes</item>
+        <item quantity="one">%1$d Byte</item>
+        <item quantity="other">%1$d Bytes</item>
+    </plurals>
+    <plurals name="plurals_items">
+        <item quantity="zero">Empty folder</item>
+        <item quantity="one">%1$d Item</item>
+        <item quantity="other">%1$d Items</item>
+    </plurals>
+
 </resources>

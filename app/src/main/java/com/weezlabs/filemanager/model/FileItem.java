@@ -11,12 +11,12 @@ public class FileItem implements Comparable<FileItem> {
     public static final int IMAGE_FILE = 5;
     public static final int AUDIO_FILE = 6;
 
-    String mName;
-    String mDetails;
-    String mDate;
-    String mPath;
-    int mFileType;
-    Uri mThumbnailUri;
+    private String mName;
+    private String mDetails;
+    private String mDate;
+    private String mPath;
+    private int mFileType;
+    private Uri mThumbnailUri;
 
     public FileItem(String name, String details, String date, String path, int fileType) {
         mName = name;
@@ -36,49 +36,30 @@ public class FileItem implements Comparable<FileItem> {
         return mName;
     }
 
-    public void setName(String name) {
-        mName = name;
-    }
-
     public String getDetails() {
         return mDetails;
     }
 
-    public void setDetails(String details) {
-        mDetails = details;
-    }
 
     public String getPath() {
         return mPath;
     }
 
-    public void setPath(String path) {
-        mPath = path;
-    }
 
     public String getDate() {
         return mDate;
     }
 
-    public void setDate(String date) {
-        mDate = date;
-    }
 
     public int getFileType() {
         return mFileType;
     }
 
-    public void setFileType(int fileType) {
-        mFileType = fileType;
-    }
 
     public Uri getThumbnailUri() {
         return mThumbnailUri;
     }
 
-    public void setThumbnailUri(Uri thumbnailUri) {
-        mThumbnailUri = thumbnailUri;
-    }
 
     @Override
     public String toString() {

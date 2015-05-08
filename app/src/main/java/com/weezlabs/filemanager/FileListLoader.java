@@ -130,13 +130,12 @@ public class FileListLoader extends AsyncTaskLoader<List<FileItem>> {
         if (subFiles != null) {
             countFiles = subFiles.length;
         }
-        return countFiles == 1 ? String.valueOf(countFiles) + getContext().getString(R.string.one_item) :
-                String.valueOf(countFiles) + getContext().getString(R.string.many_items);
+        return getContext().getResources().getQuantityString(R.plurals.plurals_items, countFiles, countFiles);
     }
 
     private String getFileLength(File file) {
-        return file.length() == 1 ? String.valueOf(file.length()) + getContext().getString(R.string.one_byte) :
-                String.valueOf(file.length()) + getContext().getString(R.string.many_bytes);
+        int countBytes = (int) file.length();
+        return getContext().getResources().getQuantityString(R.plurals.plurals_bytes, countBytes, countBytes);
     }
 
 
