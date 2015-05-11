@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_item_row_title_sample_text">Title</string>
+    <string name="label_item_row_details_sample_text">Details</string>
+    <string name="label_item_row_date_sample_text">10.09.2014</string>
+</resources>

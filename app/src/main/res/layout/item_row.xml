@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/item_row_padding">
+
+    <ImageView
+        android:id="@+id/icon_view"
+        android:layout_width="@dimen/item_row_big_icon_size"
+        android:layout_height="@dimen/item_row_big_icon_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/item_row_big_icon_margin"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/icon_view"
+        android:ellipsize="end"
+        android:padding="@dimen/item_row_text_padding"
+        android:singleLine="true"
+        android:text="@string/label_item_row_title_sample_text"
+        android:textSize="@dimen/item_row_title_text_size"/>
+
+    <RelativeLayout
+        android:id="@+id/details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_view"
+        android:layout_toRightOf="@id/icon_view">
+
+
+        <TextView
+            android:id="@+id/details_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:ellipsize="marquee"
+            android:padding="@dimen/item_row_text_padding"
+            android:requiresFadingEdge="horizontal"
+            android:singleLine="true"
+            android:text="@string/label_item_row_details_sample_text"
+            android:textSize="@dimen/item_row_details_text_size"/>
+
+        <TextView
+            android:id="@+id/date_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:ellipsize="marquee"
+            android:padding="@dimen/item_row_text_padding"
+            android:requiresFadingEdge="horizontal"
+            android:singleLine="true"
+            android:text="@string/label_item_row_date_sample_text"
+            android:textSize="@dimen/item_row_date_text_size"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>
